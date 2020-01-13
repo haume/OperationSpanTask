@@ -20,7 +20,7 @@ public class ScoreTracker : MonoBehaviour
     List<int> testLevels = new List<int> { 3, 4, 5 };
     int testItemsPerLevel = 3;
 
-    int timeOutFactor = 3;
+    int timeOutFactor = 2;
     int measureAfterTrials = 2;
     List<float> times;
     float timeout = 0;
@@ -57,7 +57,7 @@ public class ScoreTracker : MonoBehaviour
         letters = config.letters;
         sessionID = config.id;
         instructions = new string[]{
-            "Welcome! \n This experiment will take about 15 minutes. \n Tap ENTER to continue.", 
+            "Welcome to our task! \n Tap ENTER to continue.", 
             "In the following task you will need to do two things: check the validity of math equations and memorize the letters that appear after each item. Tap the button labelled YES if the equation is correct, or the button labelled NO if the equation is incorrect. \n After each equation a letter that we want you to memorize will appear.  After a certain number of items, a question mark will appear on the screen. At that point you will need to type in the list of letters. The order is irrelevant. \n Before the experiment starts, you will be doing some practice problems. During the practice problems, you will be told if you answered accurately or not. In the real experiment, there will be no feedback. Please work as quickly and as accurately as possible. Please only take breaks when directed to do so. \n Please tap ENTER to continue to the math equation practice section.",
             "In the second part of this experiment you will now see a letter after each equation. Your task is to remember these letters until you are prompted with a question mark to enter them. \n Type in the letters and press OK when you're done. \n Please make sure your answer is correct before entering. \n Tap ENTER to continue to the final practice round.",
             "You should now understand the experiment. If you do not have any more questions, we will now start with the actual experiment. If are not sure what you are being asked to do, please stop now and ask the experimenter for help. \n Make sure to respond as quickly and accurately as possible! There is a time limit for every item, so you will need to work fast. \n Tap ENTER to continue to the final part of the experiment.",
@@ -174,9 +174,9 @@ public class ScoreTracker : MonoBehaviour
                 {
                     correctItems++;
                 }
-                if(i == 0) correctLetters += str;
             }
         }
+        foreach (string str in currentLetters) correctLetters += str;
         log.writeLine(trial, correctLetters, input, correctItems);
         receivedText = false;
         currentLetters.RemoveRange(0, currentLetters.Count);
@@ -227,7 +227,12 @@ public class ScoreTracker : MonoBehaviour
                     }
                     if (showLetters)
                     {
-                        int letterIndex = Random.Range(0, letters.Length);
+                        int letterIndex;
+                        do
+                        {
+                            letterIndex = Random.Range(0, letters.Length);
+                        }
+                        while (currentLetters.Contains(letters[letterIndex]));
                         text.GetComponent<Text>().text = letters[letterIndex];
                         currentLetters.Add(letters[letterIndex]);
                         yield return new WaitForSeconds(1f);
@@ -272,7 +277,7 @@ public class ScoreTracker : MonoBehaviour
         {
             currentAnswer = "y";
         }
-        else
+        else if (tapped == 2)
         {
             currentAnswer = "n";
         }
