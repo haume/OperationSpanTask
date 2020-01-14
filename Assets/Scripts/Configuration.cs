@@ -47,6 +47,8 @@ public class Configuration : MonoBehaviour
         for (int i = 0; i < entries.Length; i=i+2) 
         {
             operations.Add(entries[i], entries[i + 1]);
+            print(entries[i]);
+            print(entries[i + 1]);
         }
         letters = letterFile.text.Split("\n"[0]);
     }
@@ -86,7 +88,12 @@ public class Configuration : MonoBehaviour
                 IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = client.Receive(ref anyIP);
                 string text = Encoding.UTF8.GetString(data);
-                if (id == -1) int.TryParse(text, out id); 
+                if (id == -1)
+                {
+                    int.TryParse(text, out id);
+                    SceneManager.LoadScene("MainScene");
+                    canvas = GameObject.FindGameObjectWithTag("MainCanvas");
+                }
                 if (text != id.ToString()) Application.Quit();
                 print("text: " + text);
                 print("id: " + id);
